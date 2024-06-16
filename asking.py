@@ -4,7 +4,7 @@ Q2.用selenium自動化測試，為何還會被擋？所以用selenium也跟用r
 Q3.這個頁面的網址為https://www.mueller.de/sale/alle-produkte/，下一頁就是很規律的https://www.mueller.de/sale/alle-produkte/?p="數字"。
 但是如果這次跑的時候全部只有28頁，把迴圈設定50頁的情況下，28頁之後全部都會出現在28頁。
 也就是說，這樣28頁的東西就會抓好幾次。如果只設定28頁，但下次的特價頁面超過28頁的話，就又會抓不到。
-在不想用click下一頁的情況下，有可能解決這個問題嗎？
+不想用.click()下一頁的情況下，有可能解決這個問題嗎？
 
 
 '''
@@ -53,33 +53,20 @@ for link in productLinks:
     productNames.append(productName.text)
 
 
-# products id
+# products id OK
     id = driver.find_element(By.XPATH, '//*[@id="page"]/main/div[1]/div/div[1]/div[2]/div[1]/div[2]')
     ids.append(id.text)
 
+#特價價格
+    try:
+        price = driver.find_element(By.XPATH, '//*[@id="page"]/main/div[1]/div/div[1]/div[2]/div[3]/div/div[1]/div[1]/span[3]')   #OK
+        prices.append(price.text)
+    except:
+        price = driver.find_element(By.XPATH, '//*[@id="page"]/main/div[1]/div/div[1]/div[2]/div[3]/div/div[1]/div[1]/span[2]')   #OK
+        prices.append(price.text)
+    else:
+        price = driver.find_element(By.XPATH, '//*[@id="page"]/main/div[1]/div/div[1]/div[2]/div[3]/div/div[1]/div/div/div[2]')  #ok
+        prices.append(price.text)
 
 driver.quit()
 
-
-# # #特價價格
-# #     try:
-# #         price = driver.find_element(By.XPATH, '//*[@id="page"]/main/div[1]/div/div[1]/div[2]/div[3]/div/div[1]/div[1]/span[3]')
-# #         prices.append(price.text)
-
-# # //*[@id="page"]/main/div[1]/div/div[1]/div[2]/div[3]/div/div[1]/div/div/div[2]
-# # //*[@id="page"]/main/div[1]/div/div[1]/div[2]/div[3]/div/div[1]/div[1]/span[2]
-# # //*[@id="page"]/main/div[1]/div/div[1]/div[2]/div[3]/div/div[1]/div[1]/span[3]
-# # //*[@id="page"]/main/div[1]/div/div[1]/div[2]/div[3]/div/div[1]/div[1]/span[3]
-
-
-
-# //*[@id="page"]/main/div[2]/div/div/div/div[2]/div[3]/div/div/a[9]/div/div[5]/span[4]
-# //*[@id="page"]/main/div[2]/div/div/div/div[2]/div[3]/div/div/a[8]/div/div[5]/div/div[2]
-# //*[@id="page"]/main/div[2]/div/div/div/div[2]/div[3]/div/div/a[11]/div/div[5]/span[2]
-
-# class="mu-product-tile__price--promo mu-product-tile__price"
-# class="mu-special-price-label__price mu-special-price-label__price--sm"
-# class="mu-product-tile__price--promo mu-product-tile__price"
-# class="mu-special-price-label__price"
-# class="mu-product-price__price--promo mu-product-price__price"
-# class="mu-product-price__price--promo mu-product-price__price"
