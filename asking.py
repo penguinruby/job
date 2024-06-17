@@ -5,14 +5,15 @@ Q3.這個頁面的網址為https://www.mueller.de/sale/alle-produkte/，下一�
 但是如果這次跑的時候全部只有28頁，把迴圈設定50頁的情況下，28頁之後全部都會出現在28頁。
 也就是說，這樣28頁的東西就會抓好幾次。如果只設定28頁，但下次的特價頁面超過28頁的話，就又會抓不到。
 不想用.click()下一頁的情況下，有可能解決這個問題嗎？
+外帶目前下一頁的按鈕我找到定位但不知道為何都無法跑。
 
 
 '''
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-# from selenium.common.exceptions import NoSuchElementException
-# from bs4 import BeautifulSoup
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 productNames=[] #商品名稱
 prices = [] #特價價格
@@ -20,18 +21,30 @@ ids = [] #商品編號
 piclinks = [] #商品圖片連結
 productLinks = []  #商品連結保存
 # pagelinks = []  #每一頁的網址
-
+test=0
 
 driver=webdriver.Chrome()
 driver.get("https://www.mueller.de/sale/alle-produkte/")
 driver.implicitly_wait(10)
 
-#下一頁
-# try:
-#     for page in range(1,29):
-#         links.append("https://www.mueller.de/sale/alle-produkte/?p="+str(page))
-# except:
-#     print("end")
+for page in range(1, 30):
+    # 獲取當前頁面的商品連結   OK
+    # for i in range(1, 21):  # 假設每頁有20個商品
+    #     try:
+    #         productLink = driver.find_element(By.XPATH, f'//*[@id="page"]/main/div[2]/div/div/div/div[2]/div[3]/div/div/a[{i}]')
+    #         productLinks.append(productLink.get_attribute('href'))
+    #     except:
+    #         print(f'商品連結 {i} 無法獲取')
+    
+    # 點擊下一頁按鈕
+    try:
+        driver.find_element(By.CLASS_NAME,"mu-button2 mu-button2--icon-only mu-pagination__navigation mu-pagination__navigation--next").click()
+        test += 1
+        print(f'已點擊第 {test} 頁')
+    except:
+        print('下一頁按鈕無法點擊，結束')
+        break
+
 
 
 for i in range (1,61):
