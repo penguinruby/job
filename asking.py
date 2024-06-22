@@ -29,6 +29,10 @@ for i in range(1, total_pages):
     pagelinks.append(f'https://www.mueller.de/sale/alle-produkte/?p={i}')
 
 
+for i in range(1, 2):  #test
+    pagelinks.append(f'https://www.mueller.de/sale/alle-produkte/?p={i}')
+
+
 #品牌蒐集 OK
 for i in range(1,334):
     brand=driver.find_element(By.XPATH, f'//*[@id="page"]/main/div[2]/div/div/div/div[1]/div/ul/li[2]/div/div/ul/li[{i}]/label/div[2]/span[1]')
@@ -56,7 +60,7 @@ for link in productLinks:
     driver.get(link)
     driver.implicitly_wait(10)
 
-    #商品圖片 OK
+    # #商品圖片 OK
     piclink = driver.find_element(By.XPATH, '//*[@id="page"]/main/div[1]/div/div[1]/div[1]/div[2]/div[1]/div/img')
     piclinks.append(piclink.get_attribute('src')) 
 
@@ -65,14 +69,11 @@ for link in productLinks:
     productName = productName.text
     productNames.append(productName)
 
-
-#------------------------
-# 遍歷每個商品名稱---test
-    for j in productName:
+    for j in productNames:
         j= j.split(" ")
 
 
-
+# 遍歷每個商品名稱跟品牌配對  OK
     for product in j:
         matched = False
         for brand in brandslowers:
@@ -82,9 +83,6 @@ for link in productLinks:
                 break
 
 
-    print(productsbrand)
-#------------------------
-#end of testing 
 
     # products id OK
     id = driver.find_element(By.XPATH, '//*[@id="page"]/main/div[1]/div/div[1]/div[2]/div[1]/div[2]')
@@ -110,5 +108,3 @@ for i in prices:
     print(i)
 
 driver.quit()
-
-
