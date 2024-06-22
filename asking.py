@@ -75,7 +75,7 @@ for link in productLinks:
 
     for product in j:
         matched = False
-        for brand in brands:
+        for brand in brandslowers:
             if brand in product.lower():
                 productsbrand.append(brand)
                 matched = True
