@@ -39,6 +39,8 @@ for link in pagelinks:
             productLinks.append(productLink)
         except:
             break
+
+
         #價格 ok
         price = driver.find_element(By.XPATH, f'//*[@id="product-tiles"]/div[{i}]/div/div[3]/div[2]/div/span[1]/span').get_attribute('textContent').replace('€','')
         prices.append(price)
@@ -68,7 +70,7 @@ for link in pagelinks:
             }
 
 
-    product_list.append(product_info)
+        product_list.append(product_info)
         
 print(product_list)
 driver.quit()
