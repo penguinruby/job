@@ -13,12 +13,10 @@ pagelinks = []  #每一頁的網址
 data =[]
 
 
-
 driver=webdriver.Chrome()
 driver.get("https://www.dm.de/ausverkauf")
 driver.implicitly_wait(10)
 wait = WebDriverWait(driver, 10)
-
 
 
 total_product= int(driver.find_element(By.XPATH, '//*[@id="mainSectionContainer"]/div[2]/div/div[2]/div/div/div[2]/span/b').text)
@@ -58,18 +56,18 @@ for link in pagelinks:
 
 
 
-for a,b,c,d, *e in ids,brands,productNames,prices,piclinks:
-    data.append({
-            'Id': a,
-            '商品品牌': b,
-            '商品名稱': c,
-            '特價價格' : d,
-            '圖片連結': e
+
+data.append({
+            'Id': ids,
+            '商品品牌': brands,
+            '商品名稱': productNames,
+            '特價價格' : prices,
+            '圖片連結': piclinks
 
     })
 
 
-with open('dm.csv', 'w', newline='', encoding='utf-8-sig') as file:
+with open('dm_fi.csv', 'w', newline='', encoding='utf-8-sig') as file:
 
     writer = csv.writer(file)
     for item in data:
