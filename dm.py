@@ -65,7 +65,6 @@ price = driver.find_element(By.XPATH, '//*[@id="mainSectionContainer"]/div[2]/di
 prices.append(price.text)
     
 
-driver.quit()
 
 
 
