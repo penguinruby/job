@@ -25,12 +25,8 @@ wait = WebDriverWait(driver, 10)
 
 #下一頁蒐集 OK
 total_pages =int(driver.find_element(By.XPATH, '//*[@id="page"]/main/div[2]/div/div/div/div[2]/div[3]/div/nav/div/button[4]/span').text)
-# for i in range(1, total_pages):
-#     pagelinks.append(f'https://www.mueller.de/sale/alle-produkte/?p={i}')
-
-for i in range(1, 2):
+for i in range(1, total_pages):
     pagelinks.append(f'https://www.mueller.de/sale/alle-produkte/?p={i}')
-
 
 
 #品牌蒐集 OK
@@ -51,7 +47,7 @@ for link in pagelinks:
     driver.get(link)
     driver.implicitly_wait(10)
     # 獲取當前頁面的商品連結 OK
-    for i in range(1, 4):  
+    for i in range(1, 61):  
         try:
             productLink = driver.find_element(By.XPATH, f'//*[@id="page"]/main/div[2]/div/div/div/div[2]/div[3]/div/div/a[{i}]').get_attribute('href')
             productLinks.append(productLink)
@@ -92,14 +88,6 @@ for link in productLinks:
 
 
 # 遍歷每個商品名稱  OK
-    # for product in j:
-    #     matched = False
-    #     for brand in brandslowers:
-    #         if brand in product.lower():
-    #             productsbrand.append(brand)
-    #             matched = True
-    #             break
-
     matched_brand = "Unknown"
     for word in productName.split(" "):
         for brand in brandslowers:
