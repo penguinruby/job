@@ -6,9 +6,9 @@ import csv
 
 productNames=[] #商品名稱+品牌
 prices = [] #特價價格
-ids = [] #商品編號
 piclinks = [] #商品圖片連結
 productLinks = []  #商品連結保存
+brands=[] #品牌
 pagelinks = []  #每一頁的網址
 data =[]
 
@@ -27,62 +27,52 @@ total_product= int(driver.find_element(By.XPATH, '//*[@id="mainSectionContainer"
 count=0
 total_pages= (total_product//10)+1
 
-for i in range(0, total_pages):
+for i in range(0, total_pages+1):
     pagelinks.append(f'https://www.dm.de/ausverkauf?popularFacet0=Ausverkauf&isSellout0=true&purchasable0=true&pageSize0=10&sort0=editorial_relevance&currentPage0={i}')
 
 
-# 獲取當前頁面的商品連結
-for i in range(1,11):
-    try:
-        productLink = driver.find_element(By.XPATH, f'//*[@id="product-tiles"]/div[{i}]/div/a')
-        productLinks.append(productLink.get_attribute('href'))
-    except:
-        break
-
-
-    #進入連結 
-for link in productLinks:
+for link in pagelinks:
     driver.get(link)
     driver.implicitly_wait(10)
+    # 獲取當前頁面的商品連結 
+    for i in range(1,11):
+        try:
+            productLink = driver.find_element(By.XPATH, f'//*[@id="product-tiles"]/div[{i}]/div/a')
+            productLinks.append(productLink.get_attribute('href'))
+        except:
+            break
+        #價格 ok
+        price = driver.find_element(By.XPATH, f'//*[@id="product-tiles"]/div[{i}]/div/div[3]/div[2]/div/span[1]/span')
+        prices.append(price.get_attribute('textContent'))
+        #商品名稱 OK
+        productName = driver.find_element(By.XPATH, f'//*[@id="product-tiles"]/div[{i}]/div/div[3]/div[3]/a')
+        productNames.append(productName.get_attribute('textContent'))  
+        #品牌 OK
+        brand = driver.find_element(By.XPATH, f'//*[@id="product-tiles"]/div[{i}]/div/div[3]/div[3]/span')
+        brands.append(brand.get_attribute('textContent'))
+        #商品圖片 OK
+        piclink = driver.find_element(By.XPATH, f'//*[@id="product-tiles"]/div[{i}]/div/a/img')
+        piclinks.append(piclink.get_attribute('src'))
+        # id
+        ids = [i.split(".html")[0][-13:] for i in productLinks]
 
-    # #商品圖片 --OK
-piclink = driver.find_element(By.XPATH, '//*[@id="detail-image-container"]/div[2]/div/ol/li[1]/div/button/img')
-piclinks.append(piclink.get_attribute('src')) 
-
-#商品+品牌名稱 OK --
-productName = driver.find_element(By.XPATH, '//*[@id="mainSectionContainer"]/div[2]/div[1]/div[1]/div[2]/div[1]/h1')
-productName = productName.text
-productNames.append(productName)
 
 
-# products id --OK
-id = driver.find_element(By.XPATH, '//*[@id="content-Produktbeschreibung"]/div/div/div[3]/div/div[2]')
-ids.append(id.text)
-
-
-#特價價格  --OK
-price = driver.find_element(By.XPATH, '//*[@id="mainSectionContainer"]/div[2]/div[1]/div[1]/div[2]/div[5]/div[1]/div[1]/div[1]/div[1]/div/div/span[1]/span')
-prices.append(price.text)
-    
-
-
-
-
-for a,b,c,*d in ids,productNames,prices,piclinks:
+for a,b,c,d, *e in ids,brands,productNames,prices,piclinks:
     data.append({
             'Id': a,
-            '商品名稱+品牌': b,
-            '特價價格' : c,
-            '圖片連結': d
+            '商品品牌': b,
+            '商品名稱': c,
+            '特價價格' : d,
+            '圖片連結': e
 
     })
-
 
 
 with open('dm.csv', 'w', newline='', encoding='utf-8-sig') as file:
 
     writer = csv.writer(file)
     for item in data:
-        writer.writerow([item['Id'], item['商品名稱'], item['特價價格'], item['圖片連結']])
+        writer.writerow([item['Id'], item['商品品牌'], item['商品名稱'], item['特價價格'],item['圖片連結']])
 
 driver.quit()
