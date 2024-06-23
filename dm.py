@@ -1,7 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
-import csv
+import pandas as pd
 
 
 productNames=[] #商品名稱+品牌
@@ -10,7 +10,7 @@ piclinks = [] #商品圖片連結
 productLinks = []  #商品連結保存
 brands=[] #品牌
 pagelinks = []  #每一頁的網址
-data =[]
+product_list =[]
 
 
 driver=webdriver.Chrome()
@@ -35,42 +35,46 @@ for link in pagelinks:
     # 獲取當前頁面的商品連結 
     for i in range(1,11):
         try:
-            productLink = driver.find_element(By.XPATH, f'//*[@id="product-tiles"]/div[{i}]/div/a')
-            productLinks.append(productLink.get_attribute('href'))
+            productLink = driver.find_element(By.XPATH, f'//*[@id="product-tiles"]/div[{i}]/div/a').get_attribute('href')
+            productLinks.append(productLink)
         except:
             break
         #價格 ok
-        price = driver.find_element(By.XPATH, f'//*[@id="product-tiles"]/div[{i}]/div/div[3]/div[2]/div/span[1]/span')
-        prices.append(price.get_attribute('textContent'))
+        price = driver.find_element(By.XPATH, f'//*[@id="product-tiles"]/div[{i}]/div/div[3]/div[2]/div/span[1]/span').get_attribute('textContent').replace('€','')
+        prices.append(price)
         #商品名稱 OK
-        productName = driver.find_element(By.XPATH, f'//*[@id="product-tiles"]/div[{i}]/div/div[3]/div[3]/a')
-        productNames.append(productName.get_attribute('textContent'))  
+        productName = driver.find_element(By.XPATH, f'//*[@id="product-tiles"]/div[{i}]/div/div[3]/div[3]/a').get_attribute('textContent')
+        productNames.append(productName)  
         #品牌 OK
-        brand = driver.find_element(By.XPATH, f'//*[@id="product-tiles"]/div[{i}]/div/div[3]/div[3]/span')
-        brands.append(brand.get_attribute('textContent'))
+        brand = driver.find_element(By.XPATH, f'//*[@id="product-tiles"]/div[{i}]/div/div[3]/div[3]/span').get_attribute('textContent')
+        brands.append(brand)
         #商品圖片 OK
-        piclink = driver.find_element(By.XPATH, f'//*[@id="product-tiles"]/div[{i}]/div/a/img')
-        piclinks.append(piclink.get_attribute('src'))
+        piclink = driver.find_element(By.XPATH, f'//*[@id="product-tiles"]/div[{i}]/div/a/img').get_attribute('src')
+        piclinks.append(piclink)
         # id
-        ids = [i.split(".html")[0][-13:] for i in productLinks]
+        # ids = [i.split(".html")[0][-13:] for i in productLinks]
+        product_id = productLink.split(".html")[0][-13:]
 
 
+        product_info = {
+                'Store': "DM",
+                'Product Name': productName,
+                'Product Number': product_id,
+                'Currency':"Eur",
+                'Price':price,
+                'Brand Name':brand,
+                'Product URL':productLink,
+                'Product Picture URL':piclink
+            }
 
 
-data.append({
-            'Id': ids,
-            '商品品牌': brands,
-            '商品名稱': productNames,
-            '特價價格' : prices,
-            '圖片連結': piclinks
-
-    })
-
-
-with open('dm_fi.csv', 'w', newline='', encoding='utf-8-sig') as file:
-
-    writer = csv.writer(file)
-    for item in data:
-        writer.writerow([item['Id'], item['商品品牌'], item['商品名稱'], item['特價價格'],item['圖片連結']])
-
+    product_list.append(product_info)
+        
+print(product_list)
 driver.quit()
+
+
+df = pd.DataFrame(product_list)
+print(df.head())
+df.to_csv('dm_fi.csv')
+
